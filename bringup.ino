@@ -23,8 +23,8 @@
 
 #define ENC_L_A 13
 #define ENC_L_B 14
-#define ENC_R_A 21
-#define ENC_R_B 38
+#define ENC_R_A 38
+#define ENC_R_B 21
 
 const uint8_t QTR_PINS[8] = {1, 2, 3, 4, 5, 6, 7, 10};  // OUT1..OUT15 (odd)
 #define QTR_CTRL 11
@@ -80,6 +80,7 @@ void qtrRaw() {
   Serial.println("QTR raw RC times in us (timeout 2500). Low = white, high = black. Any key stops.");
   Serial.println("Slide a strip of black tape under ONE sensor at a time, left to right.");
   while (!keyPressed()) {
+    Serial.println("reading...");
     qtr.read(qtrVals);
     for (int i = 0; i < 8; i++) Serial.printf("%5u ", qtrVals[i]);
     Serial.println();
@@ -164,6 +165,8 @@ void setup() {
 void loop() {
   if (!Serial.available()) return;
   char c = Serial.read();
+  delay(20);                                  // let the rest of the line arrive
+  while (Serial.available()) Serial.read();   // drop any newline
   switch (c) {
     case 'i': i2cScan(); break;
     case 'q': qtrRaw(); break;
