@@ -201,9 +201,15 @@ void handleCmd(String s) {
   else if (k == "v" && hasV) { speedTarget = v; resetCtrl(); mode = SPEED; }
   else if (k == "cal") calibrate();
   else if (k == "go") {
-    if (!calibrated) Serial.println("# run 'cal' first");
-    else { resetCtrl(); mode = LINE; Serial.println("# LINE"); }
+  if (!calibrated) Serial.println("# run 'cal' first");
+  else {
+    qtr.readCalibrated(qtrVals);
+    Serial.print("# at go:");
+    for (int i = 0; i < 8; i++) Serial.printf(" %u", qtrVals[i]);
+    Serial.println();
+    resetCtrl(); mode = LINE; Serial.println("# LINE");
   }
+}
   else if (k == "kff" && hasV) kff = v;
   else if (k == "skp" && hasV) skp = v;
   else if (k == "ski" && hasV) ski = v;
